@@ -151,7 +151,7 @@ public interface Function<T, R> {
 
 <h4>주요 특징</h4>
 <ul>
-  <li>T 타입의 입력을 받아 R타입을 반환합니다.</li>
+  <li><code>T</code> 타입의 입력을 받아 <code>R</code>타입을 반환합니다.</li>
   <li><code>default <V> Function<V, R> compose(Function<? super V, ? extends T> before)</code> : 현재 Function을 다른 Function(before)의 입력으로 사용하여 그 Function을 실행한 결과를 현재 Function의 입력으로 하여 최종 결과를 반환합니다.</li>
   <li><code>default <V> Function<T, V> andThen(Function<? super R, ? extends V> after)</code> : 현재 Function의 결과를 다른 Function(after)의 입력으로 사용하여 그 Function을 실행한 결과를 반환합니다.</li>
   <li><code>static <T> Function<T, T> identity()</code> : 동일한 입력을 받아 그대로 반환하는 Function을 생성하여 반환합니다.</li>
@@ -179,4 +179,70 @@ int result2 = andThenFunction.apply(5); // (5 + 1) * 2 = 12
 
 System.out.println("Composed Function Result: " + result1); // "Composed Function Result: 11" 출력
 System.out.println("AndThen Function Result: " + result2); // "AndThen Function Result: 12" 출력
+```
+
+> <h4>Predicate 인터페이스</h4>
+
+```
+@FunctionalInterface
+public interface Predicate<T> {
+
+    boolean test(T t);
+
+    default Predicate<T> and(Predicate<? super T> other) {
+        Objects.requireNonNull(other);
+        return (t) -> test(t) && other.test(t);
+    }
+
+    default Predicate<T> negate() {
+        return (t) -> !test(t);
+    }
+
+    default Predicate<T> or(Predicate<? super T> other) {
+        Objects.requireNonNull(other);
+        return (t) -> test(t) || other.test(t);
+    }
+
+    static <T> Predicate<T> isEqual(Object targetRef) {
+        return (null == targetRef)
+                ? Objects::isNull
+                : object -> targetRef.equals(object);
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T> Predicate<T> not(Predicate<? super T> target) {
+        Objects.requireNonNull(target);
+        return (Predicate<T>)target.negate();
+    }
+}
+```
+<h4>주요 특징</h4>
+<ul>
+  <li><code>boolean test(T t)</code> : <code>T</code>를 매개변수로 받아 <code>boolean</code> 타입을 반환합니다.</li>
+  <li><code>default Predicate<T> and(Predicate<? super T> other)</code> : 두 개의 <code>Predicate</code>를 조합하여 논리적 "AND"연산을 수행하며, 현재의 <code>Predicate</code>가 <code>false</code>일 때 다른 <code>Predicate</code>를 판단하지 않습니다.</li>
+  <li><code>default Predicate<T> negate()</code> : <code>Predicate</code>의 결과를 반전시켜 새로운 <code>Predicate</code>를 생성합니다.</li>
+  <li><code>default Predicate<T> or(Predicate<? super T> other)</code> : 두 개의 <code>Predicate</code>를 조합하여 "OR"연산을 수행하며, 현재의 <code>Predicate</code>가 <code>true</code>일 때 다른 <code>Predicate</code>는 판단하지 않고 바로 <code>true</code>를 반환 합니다.</li>
+  <li><code>static <T> Predicate<T> isEqual(Object targetRef)</code> : 두 인수가 동일한지를 판별합니다.</li>
+  <li><code>static <T> Predicate<T> not(Predicate<? super T> target)</code> : <code>negate()</code>를 호출하여 결과를 반전 시킵니다. 정적 매서드로 기존의 객체는 변하지 않고 반전된 객체를 새롭게 생성합니다.</li>
+</ul>
+
+```
+// ex
+Predicate<String> predicate = (str) -> str.equals("Hello World!");
+System.out.println(predicate.test("Hello World!")); // true 출력
+
+Predicate<Integer> isEven = number -> number % 2 == 0;
+
+// ex2
+// 짝수 여부를 판별할 숫자
+int number1 = 5;
+int number2 = 10;
+
+// Predicate를 사용하여 숫자가 짝수인지를 판별합니다.
+boolean result1 = isEven.test(number1); // false
+boolean result2 = isEven.test(number2); // true
+
+// 결과 출력
+System.out.println(number1 + " is even? " + result1); // "5 is even? false" 출력
+System.out.println(number2 + " is even? " + result2); // "10 is even? true" 출력
 ```
