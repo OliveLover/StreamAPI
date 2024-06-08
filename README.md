@@ -78,13 +78,15 @@ public interface Supplier<T> {
 Supplier<String> stringSupplier  =  () -> "Hello World!";
 System.out.println(stringsSpplier.get());
 
-// 출력 > Hello World!
+// 출력
+// > Hello World!
 
 // 메서드 참조
 Supplier<Double> randomSupplier = Math::random;
 System.out.println(randomSupplier.get());
 
-// 출력 > 0.4471631248628112
+// 출력
+// > 0.4471631248628112
 ```
 
 > <h4>Consumer 인터페이스</h4>
@@ -108,3 +110,23 @@ public interface Consumer<T> {
   <li><code>default Consumer<T> andThen(Consumer<? super T> after)</code> : <code>Consumer</code>를 실행 후에 다른 <code>Consumer</code>를 실행할 수 있도록 합니다.</li>
   <li><code>after</code>매개변수 뒤로 전달된 <code>Consumer</code>가 현재 <code>Consumer</code>다음에 실행됩니다.</li>
 </ul>
+
+```
+// ex
+Consumer<String> consumer = (str) -> System.out.println(str.split(" ")[0]);
+consumer.andThen(System.out::println).accept("Hello World!");
+
+// 출력
+// > Hello
+// > Hello World!
+
+// ex2
+List<String> strings = Arrays.asList("apple", "banana", "cherry");
+Consumer<String> printConsumer = System.out::println;
+strings.forEach(printConsumer);
+
+// 출력
+// > apple
+// > banana
+// > cherry
+```
