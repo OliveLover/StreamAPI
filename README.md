@@ -56,3 +56,55 @@ Runnable r2 = () -> System.out.println("Hello World!");
     자바에서 제공하는 Functional Interface를 활용할 수 있습니다.
   </li>
 </ul>
+
+<h3>2. 함수형 인터페이스(Functional Interface)</h3>
+
+> <h4>Supplier 인터페이스</h4>
+
+```
+@FunctionalInterface
+public interface Supplier<T> {
+    T get();
+}
+```
+
+<h4>주요 특징</h4>
+<ul>
+  <li><code>T get()</code> : 인수를 받지 않고, <code>T</code>의 객체를 반환합니다.</li>
+</ul>
+
+```
+// 기본 사용법
+Supplier<String> stringSupplier  =  () -> "Hello World!";
+System.out.println(stringsSpplier.get());
+
+// 출력 > Hello World!
+
+// 메서드 참조
+Supplier<Double> randomSupplier = Math::random;
+System.out.println(randomSupplier.get());
+
+// 출력 > 0.4471631248628112
+```
+
+> <h4>Consumer 인터페이스</h4>
+
+```
+@FunctionalInterface
+public interface Consumer<T> {
+    void accept(T t);
+
+    default Consumer<T> andThen(Consumer<? super T> after) {
+        Objects.requireNonNull(after);
+        return (T t) -> { accept(t); after.accept(t); };
+    }
+}
+```
+
+<h4>주요 특징</h4>
+<ul>
+  <li>단일 인수를 받아 아무것도 반환하지 않는 동작을 정의합니다.</li>
+  <li><code>void accpet(T t)</code> : 주어진 인수를 소비하고 반환값이 없습니다.</li>
+  <li><code>default Consumer<T> andThen(Consumer<? super T> after)</code> : <code>Consumer</code>를 실행 후에 다른 <code>Consumer</code>를 실행할 수 있도록 합니다.</li>
+  <li><code>after</code>매개변수 뒤로 전달된 <code>Consumer</code>가 현재 <code>Consumer</code>다음에 실행됩니다.</li>
+</ul>
