@@ -254,6 +254,8 @@ System.out.println(number2 + " is even? " + result2); // "10 is even? true" 출�
 <h4>BinaryOperator 인터페이스 : A binary operator from (T, T) -> T</h4>
 <p>apply()라는 두개의 매개 변수를 갖는 메서드가 있으며, 리턴값도 존재합니다. 단, 한 가지 타입에 대하여 결과도 같은 타입일 경우 사용합니다.</p>
 
+<hr />
+
 <h3>2. Stream</h3>
 
 <p>자바의 스트림은 컬렉션과 같은 연속된 정보를 처리하는데 사용합니다. 컬렉션에는 스트림을 사용할 수 있지만, 배열에는 스트림을 사용할 수 없습니다. 하지만, 배열을 컬렉션의 <code>List</code>로 변환하는 방법이 존재합니다.</p>
@@ -305,3 +307,202 @@ list.stream().filter(x-> x>10).count()
 |findFirst / Any(pred)|맨 처음이나 순서와 상관없는 것을 찾음|
 |reduce(binop) / reduce(base, binop)|결과를 취합|
 |collect(collector)|원하는 타입으로 데이터를 리턴|
+
+<h4>종단 연산(Terminal Operations)</h4>
+
+> <h5>forEach(Consumer)</h5>
+<p><code>forEach()</code>는 각 요소에 대해 지정된 동작을 파이프라인에서 처리하는 종단 연산입니다.</p>
+
+```
+// 문자 배열을 Stream으로 변환
+String[] colors = {"Red", "Green", "Blue", "Yellow"};
+Stream<String> colorStream = Stream.of(colors);
+
+// Stream의 각 요소에 대해 forEach연산 수행.
+colorStream.forEach(System.out::println);
+
+// 출력
+// > Red
+// > Green
+// > Blue
+// > Yellow
+```
+
+> <h5>count()</h5>
+<p><code>stream</code>의 요소수를 <code>long</code>타입으로 반환합니다.</p>
+
+```
+// 문자 배열을 Stream으로 변환
+String[] colors = {"Red", "Green", "Blue", "Yellow"};
+Stream<String> colorStream = Stream.of(colors);
+
+// Stream의 요소 수를 연산
+long count = colorStream.count();
+
+System.out.println("count = " + count); // "count = 4" 출력
+```
+
+> <h5>collect(Collector)</h5>
+<p><code>Stream</code>의 요소를 수집합니다.</p>
+
+```
+// 문자 배열을 Stream으로 변환
+String[] colors = {"Red", "Green", "Blue", "Yellow"};
+Stream<String> colorStream = Stream.of(colors);
+
+Map<Integer, List<String>> lengthMap = colorStream.collect(Collectors.groupingBy(String::length));
+
+System.out.println("lengthMap = " + lengthMap); // lengthMap = {3=[Red], 4=[Blue], 5=[Green], 6=[Yellow]} 출력
+```
+
+> <h5>reduce(BinaryOperator)</h5>
+<p><code>Stream</code>의 요소를 차례대로 더해 나갑니다.</p>
+
+```
+// 정수 배열을 Stream으로 변환
+Integer[] numbers = {1, 2, 3, 4, 5};
+Stream<Integer> numberStream = Stream.of(numbers);
+
+Optional<Integer> sum = numberStream.reduce((a, b) -> {
+    int result = a + b;
+    System.out.println(a + " + " + b + " = " + result);
+    return result;
+});
+
+sum.ifPresent(result -> System.out.println("Sum of numbers: " + result));
+
+// 출력
+// > 1 + 2 = 3
+// > 3 + 3 = 6
+// > 6 + 4 = 10
+// > 10 + 5 = 15
+// > Sum of numbers: 15
+```
+
+> <h5>min(Comparator), max(Comparator)</h5>
+<p><code>Stream</code>에서 최소값과 최대값을 찾습니다.</p>
+
+```
+// 문자 배열을 Stream으로 변환
+String[] colors = {"Red", "Green", "Blue", "Yellow"};
+Stream<String> colorStream = Stream.of(colors);
+
+Optional<String> minColor = colorStream.min(Comparator.naturalOrder());
+
+minColor.ifPresent(result -> System.out.println("Min color (alphabetically): " + result));
+
+// 닫힌 스트림은 재사용이 불가하므로 새로 할당
+colorStream = Stream.of(colors);
+
+Optional<String> maxColor = colorStream.max(Comparator.naturalOrder());
+
+maxColor.ifPresent(result -> System.out.println("Max color (alphabetically): " + result));
+
+// 출력
+// > Min color (alphabetically): Blue
+// > Max color (alphabetically): Yellow
+```
+
+> <h5>findAny(), findFirst()</h5>
+<p><code>findFirst()</code>는 항상 <code>Stream</code>의 첫 번째 요소를 반환하며, <code>findAny()</code>는 임의의 요소를 반환합니다.</p>
+
+```
+String[] colors = {"Red", "Green", "Blue", "Yellow"};
+
+Optional<String> firstColor = Stream.of(colors).findFirst();
+
+firstColor.ifPresent(color -> System.out.println("First color: " + color)); // "First color: Red" 출력
+
+Optional<String> anyColor = Stream.of(colors).findAny();
+
+anyColor.ifPresent(color -> System.out.println("Any color: " + color)); // 예: "Any color: Green" 출력
+
+Optional<String> anyColorParallel = Stream.of(colors).parallel().findAny();
+
+anyColorParallel.ifPresent(color -> System.out.println("Any color (parallel): " + color)); // 예: "Any color (parallel): Blue" 출력
+```
+
+> <h5>allMatch(Predicate), anyMatch(Predicate), noneMatch(Predicate)</h5>
+<ul>
+  <li><code>allMatch()</code> : 스트림의 모든 요소가 주어진 조건을 만족하는지 확인합니다.</li>
+  <li><code>anyMatch()</code> : 스트림의 임의의 요소가 주어진 조건을 만족하는지 확인합니다.</li>
+  <li><code>noneMatch()</code> : 스트림의 모든 요소가 주어진 조건을 만족하지 않는지 확인합니다.</li>
+</ul>
+
+```
+Integer[] numbers = {2, 4, 6, 8, 10};
+Stream<Integer> numberStream = Stream.of(numbers);
+
+boolean allEven = numberStream.allMatch(n -> n % 2 == 0);
+
+System.out.println("All numbers are even: " + allEven); // "All numbers are even: true" 출력
+
+numberStream = Stream.of(numbers);
+
+boolean anyGreaterThanFour = numberStream.anyMatch(n -> n > 4);
+
+System.out.println("Any number greater than 4: " + anyGreaterThanFour); // "Any number greater than 4: true" 출력
+
+numberStream = Stream.of(numbers);
+
+boolean noneGreaterThanEleven = numberStream.noneMatch(n -> n > 11);
+
+System.out.println("No number greater than 11: " + noneGreaterThanEleven); // "No number greater than 11: true" 출력
+
+```
+
+> <h5>toArray()</h5>
+<p>특정 타입의 배열로 변환할 수 있습니다.</p>
+
+```
+String[] colors = {"Red", "Green", "Blue", "Yellow"};
+Stream<String> colorStream = Stream.of(colors);
+
+Object[] colorArray = colorStream.toArray();
+
+for (Object color : colorArray) {
+    System.out.println(color);
+}
+```
+
+> <h5>forEachOrdered(Consumer)</h5>
+<p><code>Stream</code>의 요소를 순서대로 처리합니다. 병렬 스트림에서도 순서가 유지됩니다.</p>
+
+```
+Integer[] numbers = {1, 2, 3, 4, 5};
+Stream<Integer> numberStream = Stream.of(numbers).parallel();
+
+System.out.println("Parallel Stream with forEachOrdered:");
+numberStream.forEachOrdered(System.out::println);
+
+// 출력
+// > Parallel Stream with forEachOrdered:
+// > 1
+// > 2
+// > 3
+// > 4
+// > 5
+```
+
+> <h5>iterator()</h5>
+<p><code>Stream</code>의 요소를 순차적으로 접근할 수 있는 <code>Iterator</code>를 얻습니다.</p>
+
+```
+Integer[] numbers = {1, 2, 3, 4, 5};
+Stream<Integer> numberStream = Stream.of(numbers);
+
+Iterator<Integer> iterator = numberStream.iterator();
+
+System.out.println("Stream elements:");
+while (iterator.hasNext()) {
+    System.out.println(iterator.next());
+}
+
+// 출력
+// > Stream elements:
+// > 1
+// > 2
+// > 3
+// > 4
+// > 5
+```
