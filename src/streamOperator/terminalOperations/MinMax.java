@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class minMax {
+public class MinMax {
     public static void main(String[] args) {
         // 문자 배열을 Stream으로 변환
         String[] colors = {"Red", "Green", "Blue", "Yellow"};

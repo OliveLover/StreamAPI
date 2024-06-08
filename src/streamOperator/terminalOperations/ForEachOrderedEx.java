@@ -2,7 +2,7 @@ package streamOperator.terminalOperations;
 
 import java.util.stream.Stream;
 
-public class forEachOrderedEx {
+public class ForEachOrderedEx {
     public static void main(String[] args) {
         Integer[] numbers = {1, 2, 3, 4, 5};
         Stream<Integer> numberStream = Stream.of(numbers).parallel();

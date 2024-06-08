@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class flatMapEx {
+public class FlatMapEx {
     public static void main(String[] args) {
         List<String> sentences = Arrays.asList("Hello world", "Java is fun", "Stream API");
         List<String> words = sentences.stream()

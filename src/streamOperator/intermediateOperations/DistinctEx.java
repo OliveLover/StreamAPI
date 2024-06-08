@@ -3,7 +3,7 @@ package streamOperator.intermediateOperations;
 import java.util.ArrayList;
 import java.util.List;
 
-public class distinctEx {
+public class DistinctEx {
     public static void main(String[] args) {
         List<Integer> numbers = new ArrayList<>();
         numbers.add(1);

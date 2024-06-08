@@ -3,7 +3,7 @@ package streamOperator.intermediateOperations;
 import java.util.ArrayList;
 import java.util.List;
 
-public class filterEx {
+public class MapEx {
     public static void main(String[] args) {
         List<Integer> numbers = new ArrayList<>();
         numbers.add(1);
@@ -12,6 +12,6 @@ public class filterEx {
         numbers.add(4);
         numbers.add(5);
 
-        numbers.stream().filter(number -> number > 3).forEach(System.out::println);
+        numbers.stream().map(number -> number * 2).forEach(System.out::println);
     }
 }

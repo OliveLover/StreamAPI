@@ -3,7 +3,7 @@ package streamOperator.terminalOperations;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class findEx {
+public class FindEx {
     public static void main(String[] args) {
         String[] colors = {"Red", "Green", "Blue", "Yellow"};
 

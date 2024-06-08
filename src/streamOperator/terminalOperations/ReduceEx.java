@@ -3,7 +3,7 @@ package streamOperator.terminalOperations;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class reduceEx {
+public class ReduceEx {
     public static void main(String[] args) {
         // 정수 배열을 Stream으로 변환
         Integer[] numbers = {1, 2, 3, 4, 5};
