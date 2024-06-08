@@ -57,6 +57,8 @@ Runnable r2 = () -> System.out.println("Hello World!");
   </li>
 </ul>
 
+<hr />
+
 <h3>2. 함수형 인터페이스(Functional Interface)</h3>
 
 > <h4>Supplier 인터페이스</h4>
@@ -256,7 +258,7 @@ System.out.println(number2 + " is even? " + result2); // "10 is even? true" 출�
 
 <hr />
 
-<h3>2. Stream</h3>
+<h3>3. Stream</h3>
 
 <p>자바의 스트림은 컬렉션과 같은 연속된 정보를 처리하는데 사용합니다. 컬렉션에는 스트림을 사용할 수 있지만, 배열에는 스트림을 사용할 수 없습니다. 하지만, 배열을 컬렉션의 <code>List</code>로 변환하는 방법이 존재합니다.</p>
 
@@ -505,4 +507,173 @@ while (iterator.hasNext()) {
 // > 3
 // > 4
 // > 5
+```
+
+<h4>중개 연산(Intermediate Operations)</h4>
+
+> <h5>filter(Predicate)</h5>
+<p>주어진 조건에 맞는 요소들만을 포함하는 새로운 스트림을 생성합니다.</p>
+
+```
+List<Integer> numbers = new ArrayList<>();
+numbers.add(1);
+numbers.add(2);
+numbers.add(3);
+numbers.add(4);
+numbers.add(5);
+
+numbers.stream().filter(number -> number > 3).forEach(System.out::println);
+
+// 출력
+// > 4
+// > 5
+```
+
+> <h5>map(Function)</h5>
+<p>각 요소에 대해 주어진 함수 적용 결과를 포함하는 새로운 스트림을 생성합니다.</p>
+
+```
+List<Integer> numbers = new ArrayList<>();
+numbers.add(1);
+numbers.add(2);
+numbers.add(3);
+numbers.add(4);
+numbers.add(5);
+
+numbers.stream().map(number -> number * 2).forEach(System.out::println);
+
+// 출력
+// > 2
+// > 4
+// > 6
+// > 8
+// > 10
+```
+
+> <h5>flatMap(Function)</h5>
+<p>각 요소에 대해 주어진 함수 적용 결과 스트림을 병합하여 새로운 스트림을 생성합니다.</p>
+
+```
+List<String> sentences = Arrays.asList("Hello world", "Java is fun", "Stream API");
+List<String> words = sentences.stream()
+        .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
+        .toList();
+
+System.out.println("words = " + words); // words = [Hello, world, Java, is, fun, Stream, API] 출력
+
+List<List<String>> listOfLists = Arrays.asList(
+        Arrays.asList("a", "b", "c"),
+        Arrays.asList("d", "e", "f"),
+        Arrays.asList("g", "h", "i")
+);
+
+List<String> flatList = listOfLists.stream()
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
+System.out.println(flatList); // [a, b, c, d, e, f, g, h, i] 출력
+```
+
+> <h5>distinct()</h5>
+<p>중복 요소를 제거한 새로운 스트림을 생성합니다.</p>
+
+```
+List<Integer> numbers = new ArrayList<>();
+numbers.add(1);
+numbers.add(2);
+numbers.add(3);
+numbers.add(4);
+numbers.add(5);
+numbers.add(3);
+numbers.add(5);
+
+numbers.stream().distinct().forEach(System.out::println);
+
+// 출력
+// > 1
+// > 2
+// > 3
+// > 4
+// > 5
+```
+
+> <h5>sorted(), sorted(Comparator)</h5>
+<p>요소들을 정렬한 새로운 스트림을 생성합니다.</p>
+
+```
+String[] words = {"banana", "apple", "grape", "orange"};
+Stream<String> stream = Arrays.stream(words);
+
+Stream<String> sortedStream = stream.sorted(Comparator.comparingInt(String::length).reversed());
+
+sortedStream.forEach(System.out::println);
+
+// 출력
+// > banana
+// > orange
+// > apple
+// > grape
+```
+
+> <h5>peek(Consumer)</h5>
+<p>각 요소에 대해 주어진 동작을 수행하고, 동일한 요소를 포함하는 새로운 스트림을 생성합니다. 주로 디버깅 목적으로 사용됩니다.</p>
+
+```
+int[] numbers = {1, 2, 3, 4, 5};
+
+IntStream.of(numbers)
+        .peek(System.out::println)
+        .forEach(n -> {});
+
+// 출력
+// > 1
+// > 2
+// > 3
+// > 4
+// > 5
+
+// 중개연산의 과정에서 요소가 확인 가능합니다.
+```
+
+> <h5>limit(long maxSize)</h5>
+<p>주어진 최대 크기만큼의 요소를 포함하는 새로운 스트림을 생성합니다.</p>
+
+```
+// 1부터 시작하는 무한 스트림 생성
+Stream<Integer> infiniteStream = Stream.iterate(1, i -> i + 1).peek(infinite -> System.out.println("infinite : " + infinite));
+
+Stream<Integer> limitedStream = infiniteStream.limit(5);
+
+limitedStream.forEach(System.out::println);
+
+// 출력
+// > infinite : 1
+// > 1
+// > infinite : 2
+// > 2
+// > infinite : 3
+// > 3
+// > infinite : 4
+// > 4
+// > infinite : 5
+// > 5
+
+// 스트림에서는 계속 무한으로 스트림을 생성하다가 limit 연산으로 5까지 확인하고 stream을 종료하여 무한루프에 빠지지 않습니다.
+```
+
+> <h5>skip(long n)</h5>
+<p>처음 n개의 요소를 건너뛴 나머지 요소를 포함하는 새로운 스트림을 생성합니다.</p>
+
+```
+Stream<Integer> numbersStream = Stream.iterate(1, i -> i + 1).limit(10);
+
+numbersStream.skip(5)
+        .forEach(System.out::println);
+
+// 출력
+// > 6
+// > 7
+// > 8
+// > 9
+// > 10
 ```
