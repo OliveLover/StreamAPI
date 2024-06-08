@@ -76,17 +76,11 @@ public interface Supplier<T> {
 ```
 // 기본 사용법
 Supplier<String> stringSupplier  =  () -> "Hello World!";
-System.out.println(stringsSpplier.get());
-
-// 출력
-// > Hello World!
+System.out.println(stringsSpplier.get()); // "Hello World!" 출력
 
 // 메서드 참조
 Supplier<Double> randomSupplier = Math::random;
-System.out.println(randomSupplier.get());
-
-// 출력
-// > 0.4471631248628112
+System.out.println(randomSupplier.get()); // 0.4471631248628112 출력
 ```
 
 > <h4>Consumer 인터페이스</h4>
@@ -129,4 +123,60 @@ strings.forEach(printConsumer);
 // > apple
 // > banana
 // > cherry
+```
+
+> <h4>Function 인터페이스</h4>
+
+```
+@FunctionalInterface
+public interface Function<T, R> {
+
+    R apply(T t);
+
+    default <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+        Objects.requireNonNull(before);
+        return (V v) -> apply(before.apply(v));
+    }
+
+    default <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+        Objects.requireNonNull(after);
+        return (T t) -> after.apply(apply(t));
+    }
+
+    static <T> Function<T, T> identity() {
+        return t -> t;
+    }
+}
+```
+
+<h4>주요 특징</h4>
+<ul>
+  <li>T 타입의 입력을 받아 R타입을 반환합니다.</li>
+  <li><code>default <V> Function<V, R> compose(Function<? super V, ? extends T> before)</code> : 현재 Function을 다른 Function(before)의 입력으로 사용하여 그 Function을 실행한 결과를 현재 Function의 입력으로 하여 최종 결과를 반환합니다.</li>
+  <li><code>default <V> Function<T, V> andThen(Function<? super R, ? extends V> after)</code> : 현재 Function의 결과를 다른 Function(after)의 입력으로 사용하여 그 Function을 실행한 결과를 반환합니다.</li>
+  <li><code>static <T> Function<T, T> identity()</code> : 동일한 입력을 받아 그대로 반환하는 Function을 생성하여 반환합니다.</li>
+</ul>
+
+```
+// ex
+Function<String, Integer> function = str -> str.length();
+System.out.println(function.apply("Hello World!")); // 12 출력
+
+// ex
+// 두 함수를 정의합니다.
+Function<Integer, Integer> addOne = x -> x + 1;
+Function<Integer, Integer> multiplyByTwo = x -> x * 2;
+
+// compose() 메서드를 사용하여 두 함수를 조합합니다.
+Function<Integer, Integer> composedFunction = addOne.compose(multiplyByTwo);
+
+// andThen() 메서드를 사용하여 두 함수를 조합합니다.
+Function<Integer, Integer> andThenFunction = addOne.andThen(multiplyByTwo);
+
+// 조합된 함수를 사용하여 결과를 계산합니다.
+int result1 = composedFunction.apply(5); // (5 * 2) + 1 = 11
+int result2 = andThenFunction.apply(5); // (5 + 1) * 2 = 12
+
+System.out.println("Composed Function Result: " + result1); // "Composed Function Result: 11" 출력
+System.out.println("AndThen Function Result: " + result2); // "AndThen Function Result: 12" 출력
 ```
