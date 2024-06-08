@@ -246,3 +246,10 @@ boolean result2 = isEven.test(number2); // true
 System.out.println(number1 + " is even? " + result1); // "5 is even? false" 출력
 System.out.println(number2 + " is even? " + result2); // "10 is even? true" 출력
 ```
+
+> <h4>그외 </h4>
+<h4>UnaryOperator 인터페이스 :  A unary operator from T -> T</h4>
+<p>apply()라는 하나의 매개 변수를 갖는 메서드가 있으며, 리턴값도 존재합니다. 단, 한 가지 타입에 대하여 결과도 같은 타입일 경우 사용합니다.</p><br />
+
+<h4>BinaryOperator 인터페이스 : A binary operator from (T, T) -> T</h4>
+<p>apply()라는 두개의 매개 변수를 갖는 메서드가 있으며, 리턴값도 존재합니다. 단, 한 가지 타입에 대하여 결과도 같은 타입일 경우 사용합니다.</p>
