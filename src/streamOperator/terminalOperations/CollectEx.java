@@ -39,7 +39,7 @@ public class CollectEx {
         Map<Boolean, List<Integer>> evenOddMap = numbers.boxed().collect(Collectors.partitioningBy(n -> n % 2 == 0));
 
         System.out.println("Even numbers : " + evenOddMap.get(true));
-        System.out.println("Odd numbers :   " + evenOddMap.get(false));
+        System.out.println("Odd numbers : " + evenOddMap.get(false));
 
         Map<Boolean, List<String>> colorPartition = Stream.of(colors).collect(Collectors.partitioningBy(color -> color.length() > 3));
 
