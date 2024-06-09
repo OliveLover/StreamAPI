@@ -70,6 +70,13 @@ public interface Supplier<T> {
 }
 ```
 
+```
+() -> expression
+
+() -> { statement }
+```
+
+
 <h4>주요 특징</h4>
 <ul>
   <li><code>T get()</code> : 인수를 받지 않고, <code>T</code>의 객체를 반환합니다.</li>
@@ -97,6 +104,12 @@ public interface Consumer<T> {
         return (T t) -> { accept(t); after.accept(t); };
     }
 }
+```
+
+```
+( parameter ) -> expression
+
+( parameter ) -> { statement }
 ```
 
 <h4>주요 특징</h4>
@@ -149,6 +162,12 @@ public interface Function<T, R> {
         return t -> t;
     }
 }
+```
+
+```
+( parameter ) -> expression
+
+( parameter ) -> { statement }
 ```
 
 <h4>주요 특징</h4>
@@ -218,6 +237,13 @@ public interface Predicate<T> {
     }
 }
 ```
+
+```
+( parameter ) -> expression
+
+( parameter ) -> { statement }
+```
+
 <h4>주요 특징</h4>
 <ul>
   <li><code>boolean test(T t)</code> : <code>T</code>를 매개변수로 받아 <code>boolean</code> 타입을 반환합니다.</li>
@@ -253,8 +279,20 @@ System.out.println(number2 + " is even? " + result2); // "10 is even? true" 출�
 <h4>UnaryOperator 인터페이스 :  A unary operator from T -> T</h4>
 <p>apply()라는 하나의 매개 변수를 갖는 메서드가 있으며, 리턴값도 존재합니다. 단, 한 가지 타입에 대하여 결과도 같은 타입일 경우 사용합니다.</p><br />
 
+```
+( parameter ) -> expression
+
+( parameter ) -> { statement }
+```
+
 <h4>BinaryOperator 인터페이스 : A binary operator from (T, T) -> T</h4>
 <p>apply()라는 두개의 매개 변수를 갖는 메서드가 있으며, 리턴값도 존재합니다. 단, 한 가지 타입에 대하여 결과도 같은 타입일 경우 사용합니다.</p>
+
+```
+( parameter1, parameter2 ) -> expression
+
+( parameter1, parameter2 ) -> { statement }
+```
 
 <hr />
 
