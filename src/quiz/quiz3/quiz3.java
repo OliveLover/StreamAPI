@@ -1,4 +1,4 @@
-package quiz;
+package quiz.quiz3;
 
 
 import java.util.Arrays;
